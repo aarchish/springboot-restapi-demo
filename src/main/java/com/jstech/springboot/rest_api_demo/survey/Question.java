@@ -8,6 +8,9 @@ public class Question {
     private List<String> option;
     private String correctAnswer;
 
+    public Question(){
+    }
+
     public Question(String id, String description, List<String> option, String correctAnswer) {
         super();
         this.id = id;
