@@ -1,9 +1,12 @@
 package com.jstech.springboot.rest_api_demo.survey;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +59,32 @@ public class SurveyResource {
     // POST METHODS
 
     @RequestMapping(value = "/surveys/{surveyId}/questions", method = RequestMethod.POST)
-    public void addSurveyQuestion(@PathVariable String surveyId, @RequestBody Question question) {
-        surveyService.addSurveyQuestion(surveyId, question);
+    public ResponseEntity<Object> addSurveyQuestion(@PathVariable String surveyId, @RequestBody Question question) {
+        String questionId = surveyService.addSurveyQuestion(surveyId, question);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{questionId}").buildAndExpand(questionId).toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    // DELETE METHODS
+
+    @RequestMapping(value = "/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteSurveyQuestionById(@PathVariable String surveyId, @PathVariable String questionId) {
+        boolean removed = surveyService.deleteSurveyQuestionById(surveyId, questionId);
+
+        if (!removed) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return ResponseEntity.noContent().build();
+    }
+
+    // PUT or UPDATE METHODS
+
+    @RequestMapping(value = "/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.PUT)
+    public ResponseEntity<Object> updateSurveyQuestionById(
+            @PathVariable String surveyId, @PathVariable String questionId, @RequestBody Question question) {
+        String updatedQuestion = surveyService.updateSurveyQuestionById(surveyId, questionId, question);
+
+        if (updatedQuestion == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{questionId}").buildAndExpand(questionId).toUri();
+        return ResponseEntity.created(location).build();
     }
 }

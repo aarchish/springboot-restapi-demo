@@ -2,6 +2,8 @@ package com.jstech.springboot.rest_api_demo.survey;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,11 @@ public class SurveyService {
                 "Description of the Survey", questions);
 
         surveys.add(survey);
+    }
+
+    private static String getRandomId() {
+        SecureRandom secureRandom = new SecureRandom();
+        return new BigInteger(32, secureRandom).toString();
     }
 
     // GET or Retrieve Existing Data
@@ -65,8 +72,36 @@ public class SurveyService {
 
     // POST or Add new Data
 
-    public void addSurveyQuestion(String surveyId, Question question) {
+    public String addSurveyQuestion(String surveyId, Question question) {
         List<Question> questions = retrieveSurveyAllQuestions(surveyId);
+        String randomId = getRandomId();
+
+        question.setId(randomId);
         questions.add(question);
+
+        return randomId;
+    }
+
+    // DELETE Data
+
+    public Boolean deleteSurveyQuestionById(String surveyId, String questionId) {
+        List<Question> questions = retrieveSurveyAllQuestions(surveyId);
+        if (questions.isEmpty()) return null;
+
+        Predicate<? super Question> predicate = question -> question.getId().equals(questionId);
+        boolean removed = questions.removeIf(predicate);
+
+        return removed;
+    }
+
+    //UPDATE Data
+
+    public String updateSurveyQuestionById(String surveyId, String questionId, Question question) {
+        boolean deleteQuestion = deleteSurveyQuestionById(surveyId, questionId);
+        if (!deleteQuestion) return null;
+
+        String addQuestion = addSurveyQuestion(surveyId, question);
+
+        return addQuestion;
     }
 }

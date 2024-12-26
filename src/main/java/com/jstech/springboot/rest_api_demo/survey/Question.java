@@ -8,7 +8,7 @@ public class Question {
     private List<String> option;
     private String correctAnswer;
 
-    public Question(){
+    public Question() {
     }
 
     public Question(String id, String description, List<String> option, String correctAnswer) {
@@ -23,16 +23,32 @@ public class Question {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<String> getOption() {
         return option;
     }
 
+    public void setOption(List<String> option) {
+        this.option = option;
+    }
+
     public String getCorrectAnswer() {
         return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
     @Override
