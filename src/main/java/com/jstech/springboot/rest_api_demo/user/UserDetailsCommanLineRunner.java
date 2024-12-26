@@ -20,9 +20,11 @@ public class UserDetailsCommanLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         repository.save(new UserDetails("Aarchish", "Admin"));
-        repository.save(new UserDetails("AarchishJindal", "Admin"));
+        repository.save(new UserDetails("Jindal", "Admin"));
+        repository.save(new UserDetails("John", "User"));
 
-        List<UserDetails> users = repository.findAll();
+        //List<UserDetails> users = repository.findAll();
+        List<UserDetails> users = repository.findByRole("User");
 
         users.forEach(user -> logger.info(user.toString()));
     }
